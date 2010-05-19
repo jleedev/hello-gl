@@ -15,9 +15,9 @@ GLUquadric* quadric;
 double theta = 0;
 
 void render(void) {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glColor3f(0.0f, 0.0f, 0.0f);
+	glColor3f(0.5f, 0.0f, 0.0f);
 	glLineWidth(4);
 	glCullFace(GL_FRONT);
 	glPolygonMode(GL_BACK, GL_LINE);
@@ -28,7 +28,7 @@ void render(void) {
 	glPolygonMode(GL_FRONT, GL_FILL);
 	drawGeometry();
 
-	glColor3f(0.0f, 0.0f, 0.0f);
+	glColor3f(0.5f, 0.0f, 0.0f);
 	glLineWidth(1);
 	glCullFace(GL_BACK);
 	glPolygonMode(GL_FRONT, GL_LINE);
@@ -39,26 +39,21 @@ void render(void) {
 
 void drawGeometry(void) {
 	glPushMatrix();
-	glRotated(theta, sqrt(3)/2, 0.5, 0);
+	glRotated(theta, 1, 0.5, 0);
 
-	gluQuadricOrientation(quadric, GLU_INSIDE);
-	gluDisk(quadric, 0, 100, 20, 1);
-	gluQuadricOrientation(quadric, GLU_OUTSIDE);
-	gluCylinder(quadric, 100, 100, 100, 20, 1);
-	glTranslatef(0, 0, 100);
-	gluDisk(quadric, 0, 100, 20, 1);
+	glutSolidTorus(20, 100, 10, 30);
 
 	glPopMatrix();
 }
 
 void update(void) {
-	theta = theta + M_PI / 60;
+	theta = theta + M_PI / 120;
 	glutPostRedisplay();
 }
 
 int main(int argc, char **argv) {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(400, 300);
 	glutCreateWindow("Hello World");
 	glutDisplayFunc(&render);
@@ -67,8 +62,11 @@ int main(int argc, char **argv) {
 	quadric = gluNewQuadric();
 
 	glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
-	glOrtho(-200, 200, -150, 150, -200, 200);
+	//glOrtho(-200, 200, -150, 150, -200, 200);
+	glFrustum(-200, 200, -150, 150, 600, 1000);
+	glTranslatef(0, 0, -800);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 
 	glutMainLoop();
 	return 0;
