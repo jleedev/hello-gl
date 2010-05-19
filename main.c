@@ -30,7 +30,7 @@ void render(void) {
 
 	glColor3f(0.0f, 0.0f, 0.0f);
 	glLineWidth(1);
-	glCullFace(GL_FRONT);
+	glCullFace(GL_BACK);
 	glPolygonMode(GL_FRONT, GL_LINE);
 	drawGeometry();
 
