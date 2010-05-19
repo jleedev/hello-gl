@@ -8,13 +8,13 @@
 #  include <GL/glut.h>
 #endif
 
-void drawGeometry(void);
+#define TIMERMSECS 17.0f
 
-GLuint torus;
+static void drawGeometry(void);
 
-double theta = 0;
+static double theta = 0;
 
-void render(void) {
+static void render(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glColor3f(0.0f, 0.0f, 0.0f);
@@ -37,26 +37,23 @@ void render(void) {
 	glutSwapBuffers();
 }
 
-void drawGeometry(void) {
+static void drawGeometry(void) {
 	glPushMatrix();
 	glRotated(theta, 1, 0.5, 0);
 
-	glCallList(torus);
+	glutSolidTorus(20, 100, 10, 30);
 
 	glPopMatrix();
 }
 
-void update(void) {
-	theta = theta + M_PI / 120;
+static void update(int value) {
+	(void) value;
+	glutTimerFunc(TIMERMSECS, update, 0);
+	theta = theta + 1;
 	glutPostRedisplay();
 }
 
-void init(void) {
-	torus = glGenLists(1);
-	glNewList(torus, GL_COMPILE);
-	glutSolidTorus(20, 100, 10, 30);
-	glEndList();
-
+static void init(void) {
 	glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
 	//glOrtho(-200, 200, -150, 150, -200, 200);
 	glFrustum(-200, 200, -150, 150, 600, 1000);
@@ -66,13 +63,13 @@ void init(void) {
 
 }
 
-int main(int argc, char **argv) {
+extern int main(int argc, char **argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(400, 300);
 	glutCreateWindow("Hello World");
-	glutDisplayFunc(&render);
-	glutIdleFunc(&update);
+	glutDisplayFunc(render);
+	glutTimerFunc(TIMERMSECS, update, 0);
 	init();
 	glutMainLoop();
 	return 0;
